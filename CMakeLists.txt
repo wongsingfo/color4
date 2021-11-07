@@ -14,6 +14,16 @@ file(WRITE ${googletest_DRIVER}
 	"\treturn RUN_ALL_TESTS();\n"
 	"}\n")
 
+# import cityhash
+
+add_library(cityhash STATIC third_party/cityhash/src/city.cc)
+set(cityhash_GEN ${CMAKE_BINARY_DIR}/third_party/cityhash)
+configure_file(cmake/cityhash_config.h.in ${cityhash_GEN}/config.h)
+target_include_directories(cityhash PUBLIC ${cityhash_GEN})
+target_include_directories(cityhash PUBLIC third_party/cityhash/src)
+
+# import color4
+
 add_subdirectory(src)
 
 file(GLOB_RECURSE color4_TEST_FILES
@@ -23,6 +33,6 @@ file(GLOB_RECURSE color4_TEST_FILES
 include(GoogleTest)
 enable_testing()
 add_executable(color4_test ${googletest_DRIVER} ${color4_TEST_FILES})
-target_link_libraries(color4_test gtest gtest_main)
+target_link_libraries(color4_test gtest gtest_main cityhash)
 gtest_discover_tests(color4_test)
 
