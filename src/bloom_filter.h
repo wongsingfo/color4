@@ -9,25 +9,7 @@
 #include <string.h>
 #include <cassert>
 
-/// Get the type of the N-th element.
-template<int N, class... Args>
-using get_type = typename std::tuple_element<N, std::tuple<Args...>>::type;
-
-/// Get the value of the N-th element.
-template<int N, class... Args>
-constexpr decltype(auto) get(Args&&... args)
-{
-    return std::get<N>(std::forward_as_tuple(args...));
-}
-
-/// Get the length of Args.
-template<class... Args>
-constexpr auto length_of = sizeof...(Args);
-
-constexpr auto round_up(int x, int align)
-{
-    return (x + align - 1) / align;
-}
+#include "utils.h"
 
 /**
  * @param n    Number of bits in one bloom filter.
