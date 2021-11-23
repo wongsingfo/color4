@@ -64,7 +64,7 @@ Email: chengke@pku.edu.cn}
 
 Cuckoo filter \cite{cuckoo} can replace Bloom filter \cite{bloom} for approximate set membership tests. It has the advantages of support to add and remove items dynamically while preserving a low false positive rate. There are two fundamental insights behind such a filter design. First, Cuckoo use the power-of-two of Cuckoo hashing, enabling item online insertion and deletion. Second, it leverages the XOR operation with fingerprint hashing to ensure conflicted items can be relocated to an entirely different part of the hash bucket, therefore retaining a low hash collision and improving the data structure utilization. 
 
-In this work we propose \sys, a variant of Cuckoo filter which improve the load factor. The key idea is that we use a K-dimensional vector space to kick items when the hash bucket is full. This idea derives from the aforementioned two insights in Cuckoo filter. First, the power-of-two allows an item placement at two buckets. If we can place the item at more than two buckets, we can achieve a higher load factor. Second, the XOR operation is a module-like algebraic structure. In fact, the Cuckoo filter use a 1-dimensional vector space to locate the bucket. Theoretically, we can extend it to K-dimensional, allowing a item to be placed at more different buckets.
+In this work we propose \sys, a variant of Cuckoo filter which improve the load factor. The key idea is that we use a K-dimensional vector space to kick items when the hash bucket is full. This idea derives from the aforementioned two insights in Cuckoo filter. First, the power-of-two allows an item placement at two buckets. If we can place the item at more than two buckets, we can achieve a higher load factor. Second, the XOR operation is a module-like algebraic structure. In fact, the Cuckoo filter uses a 1-dimensional vector space to locate the bucket. Theoretically, we can extend it to K-dimensional, allowing a item to be placed at more different buckets.
 
 We carry out experiment to show the \sys performance. The results indicates that, with a typical setting where there are 4 entries in a bucket and 12-bit fingerprints, \sys improves the load factor of 1.5\% at the cost of only 0.18\% increased false positive rate.
 
@@ -79,7 +79,7 @@ We carry out experiment to show the \sys performance. The results indicates that
 
 \begin{figure}
 \centering
-\includegraphics[width=0.6\linewidth]{design.png}
+\includegraphics[width=0.7\linewidth]{design.png}
 \caption{\sys uses a 2-dimensional vector space to locate buckets. The $f_1,f_2$ are two fingerprint hashes of item $x$.}
 \label{design}
 \end{figure}
@@ -102,7 +102,7 @@ j =& h_2(x) = h_1(x) \oplus \text{hash}(\text{fp}(x))
 i =& h_1(x) = \text{hash}(x) \\
 j =& h_2(x) = h_1(x) \oplus \text{hash1}(\text{fp}(x))\\
 k =& h_3(x) = h_1(x) \oplus \text{hash2}(\text{fp}(x)) \\
-k =& h_4(x) = h_1(x) \oplus \text{hash1}(\text{fp}(x)) \oplus \text{hash2}(\text{fp}(x))
+l =& h_4(x) = h_1(x) \oplus \text{hash1}(\text{fp}(x)) \oplus \text{hash2}(\text{fp}(x))
 \end{split}
 \end{equation*}
 
@@ -114,11 +114,34 @@ Note that \sys differs from the design where we just increase the number of entr
 
 \subsection{Implementation and Setup}
 
-We implement \sys with about 800 lines in C++ language. The code is available at GitHub~\cite{yeah}. To make the comparison, we also implement a vanilla Cuckoo filter. To reduce the run-time overhead, we leverage the template programming technique in C++, fixing the variables like the \verb|bits_per_fingerprint| at compile-time. We use CityHash~\cite{cityhash} as the hash function. The 64-bit hash result is used for generate bucket index and the XOR values. We use the Mersenne Twister with default parameters to generate items for insertion. To make the experiment reproducible, we fix the random seed. 
+We have implemented \sys with about 800 lines of code in C++ language. The code is available at GitHub~\cite{yeah}. To make the comparison, we also implement a vanilla Cuckoo filter. To reduce the run-time overhead, we leverage the template programming technique in C++, fixing the variables like the \verb|bits_per_fingerprint| at compile-time. We use CityHash~\cite{cityhash} as the hash function. The 64-bit hash result is used for generate bucket index and the XOR values. We use the Mersenne Twister with default parameters to generate items for insertion. To make the experiment reproducible, we fix the random seed. 
 
-\subsection{Evaluation Results}
+\subsection{Evaluation Results}			
+
+\nosection{Load factors.} We first measure the load factor $\alpha$ of \sys with different capacity. The capacity varies from $2^{10}$ to $2^{26}$. To show that our method is different from simply increasing the number of entries per bucket, we also evaluate Cuckoo-2 and Cuckoo-4. Here Cuckoo-k means we increase the number of entries per bucket by k-fold and meanwhile decrease the number of buckets by k-fold. As shown in Figure~\ref{load}, \sys  improves the load factor of approximate 1.5\% and has almost the same load factor as the vanilla Cuckoo-4, regardless of the filter capacity.
+
+\nosection{False positive rate.} As shown in Figure~\ref{fp}, our algorithm increases the false positive rate of only 0.18\%. The rate is almost the same as Cuckoo-2 but we can achieve higher load factor than Cuckoo-2. Although Cuckoo-4 can achieve the highest load factor amongst these algorithm, it damages the false positive rate by 4-fold, making it impractical to deploy.
+
+\begin{figure}
+\centering
+\includegraphics[width=.95\linewidth]{../plot/load.pdf}
+\caption{The load factor. \sys outperforms Cuckoo and Cuckoo-2.}
+\label{load}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=.95\linewidth]{../plot/fp.pdf}
+\caption{The false positive rate. \sys sacrifices only a little accuracy.}
+\label{fp}
+\end{figure}
+
+\section{Conclusion}
+
+We propose \sys, a variant of Cuckoo filter which strikes a balance between the load factor and false positive rate. It works better than simply increasing the number of entries per bucket.
 
 \bibliographystyle{IEEEtran} 
+
 \bibliography{refs} 
 
 \end{document}
