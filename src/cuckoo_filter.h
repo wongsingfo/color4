@@ -32,7 +32,7 @@ public:
         delete table_;
     }
 
-    void insert(const Key &v)
+    bool insert(const Key &v)
     {
         size_t h;
         size_t fp;
@@ -42,7 +42,7 @@ public:
             uint32_t last;
 
             if (table_->insert_elem(h, fp, kick, &last)) {
-                return;
+                return true;
             }
 
             if (kick) {
@@ -51,6 +51,7 @@ public:
 
             h = xor_hash_fp(h, fp);
         }
+	return false;
     }
 
     bool query(const Key &v)
@@ -101,7 +102,7 @@ private:
         }
         *h1 = ha;
 
-        size_t hb = ha & ((1 << bits_per_key) - 1);
+        size_t hb = h & ((1l << bits_per_key) - 1);
         if (hb == 0) {
             // 0 is reserved to mark the empty slot in the bucket.
             *fp = 1;

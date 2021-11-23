@@ -7,10 +7,11 @@
 #include <tuple>
 
 #ifdef NDEBUG
-#define log_debug() do {} while (0)
+#define log_debug(fmt, ...) do {} while (0)
 #else
 #define log_debug(fmt, ...) fprintf(stderr, fmt, __VA_ARGS__)
 #endif
+#define log_info(fmt, ...) fprintf(stdout, fmt, __VA_ARGS__)
 
 /// Get the type of the N-th element.
 template<int N, class... Args>
@@ -49,5 +50,7 @@ inline size_t upperpower2(size_t x)
     x++;
     return x;
 }
+
+constexpr int kBitsPerByte = 8;
 
 #endif // COLOR4_UTILS_H
