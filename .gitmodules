@@ -4,3 +4,6 @@
 [submodule "third_party/cityhash"]
 	path = third_party/cityhash
 	url = https://github.com/google/cityhash
+[submodule "third_party/gnuplot"]
+	path = third_party/gnuplot
+	url = git@github.com:wongsingfo/paper-util.git

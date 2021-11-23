@@ -8,6 +8,7 @@
 #include <stdexcept>
 #include <stdint.h>
 #include <stdlib.h>
+#include <string.h>
 #include <random>
 
 #include "utils.h"
@@ -22,10 +23,13 @@ class BitTable
 public: 
     using elem_type = uint32_t;
 
-    static_assert(bits_per_elem <= sizeof(elem_type),
+    static_assert(bits_per_elem <= sizeof(elem_type) * kBitsPerByte,
             "bits_per_elem is too large");
     static_assert(bits_per_elem > 0,
             "bits_per_elem must be greater than zero");
+    static_assert(bits_per_elem == 2 || bits_per_elem == 4 || bits_per_elem == 8 ||
+	          bits_per_elem == 12 || bits_per_elem == 16 || bits_per_elem == 32,
+	    "BitTable only support bits_per_elem in {2, 4, 8, 12, 16, 32}");
 
     class Bucket
     {
@@ -38,7 +42,7 @@ public:
           rng_(kRngSeed)
     {
         size_t size = num_buckets_ + kBucketsPadding;
-        log_debug("table size: %zu, bucket size: %zu\n", size, kBytesPerBucket);
+	/* log_debug("table size: %zu, bucket size: %zu\n", size, kBytesPerBucket); */
         bucket_ = new Bucket[size];
         static_assert(sizeof(Bucket) == kBytesPerBucket,
                 "Bucket is not in packed form");
@@ -80,7 +84,7 @@ public:
             throw std::runtime_error("unsupported bits_per_elem");
 	}
         uint32_t result = tag & kElemMask;
-        log_debug("get(%zd, %d)=%d\n", i, j, result);
+	/* log_debug("get(%zd, %d)=%d\n", i, j, result); */
         return result;
     }
 
@@ -90,7 +94,7 @@ public:
      */
     inline void set_elem(size_t i, int j, elem_type t)
     {
-        log_debug("set(%zd, %d)=%d\n", i, j, t);
+	/* log_debug("set(%zd, %d)=%d\n", i, j, t); */
         uint8_t *p = bucket_[i].bits_;
         uint32_t elem = t & kElemMask;
         /* following code only works for little-endian */
@@ -180,7 +184,7 @@ private:
     static constexpr size_t kBucketsPadding =
 	((((kBytesPerBucket + 7) / 8) * 8) - 1) / kBytesPerBucket;
 
-    static constexpr elem_type kElemMask = (1 << bits_per_elem) - 1;
+    static constexpr elem_type kElemMask = (1l << bits_per_elem) - 1;
 
     static constexpr unsigned kRngSeed = 20211107;
 

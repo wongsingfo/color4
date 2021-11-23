@@ -24,8 +24,6 @@ target_include_directories(cityhash PUBLIC third_party/cityhash/src)
 
 # import color4
 
-add_subdirectory(src)
-
 file(GLOB_RECURSE color4_TEST_FILES
      LIST_DIRECTORIES false
      src/*_test.cc)
@@ -35,4 +33,8 @@ enable_testing()
 add_executable(color4_test ${googletest_DRIVER} ${color4_TEST_FILES})
 target_link_libraries(color4_test gtest gtest_main cityhash)
 gtest_discover_tests(color4_test)
+
+add_executable(color4_benchmark benchmark.cc)
+target_link_libraries(color4_benchmark cityhash)
+target_include_directories(color4_benchmark PUBLIC src)
 
