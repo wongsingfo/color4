@@ -9,6 +9,7 @@
 #include <cassert>
 #include "city.h"
 #include "cuckoo_filter.h"
+#include "yeah_filter.h"
 
 constexpr size_t num_fp_test = 100000;
 constexpr int randseed = 20211124;
@@ -17,6 +18,9 @@ size_t cuckoo_cityhash(uint32_t x)
 {
 	return CityHash64((const char*) &x, sizeof(x));
 }
+
+#define BENCHMARK_FILTER CuckooFilter
+/* #define BENCHMARK_FILTER YeahFilter */
 
 /**
  * @param capacity     The number of element fingerprints.
@@ -48,7 +52,7 @@ void run_benchmark()
 		element_set.insert(x);
 	}
 
-	CuckooFilter<bits_per_key, uint32_t, decltype(&cuckoo_cityhash)> 
+	BENCHMARK_FILTER<bits_per_key, uint32_t, decltype(&cuckoo_cityhash)> 
 		filter(cuckoo_cityhash, capacity);
 
 	size_t insert_count = 0;
@@ -77,6 +81,7 @@ void run_benchmark()
 int main()
 {
 /* template<int capacity, int bits_per_key, int way, int num_elem> */
-	run_benchmark< 1 << 10,      12,       4,        1 << 10 >();
+/* run_benchmark< 1 << 10,      12,       4,        1 << 10 >(); */
+	run_benchmark< 1 << 10,      12,       16,        1 << 10 >();
 	return 0;
 }
