@@ -1,0 +1,56 @@
+\documentclass{IEEEtran}
+% \documentclass[11pt]{article}
+
+\usepackage{blindtext}
+\usepackage[colorlinks]{hyperref}
+\usepackage{breakurl}
+\usepackage{listings}
+\usepackage[table,xcdraw]{xcolor}
+\usepackage{fancyvrb}
+\usepackage{graphicx}
+\usepackage{float}
+
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+	% backgroundcolor=\color{backcolour},   
+	commentstyle=\color{codegray},
+	keywordstyle=\bfseries,
+	numberstyle=\tiny\color{codegray},
+	stringstyle=\color{codepurple},
+	basicstyle=\ttfamily\scriptsize,
+	breakatwhitespace=false,         
+	breaklines=true,                 
+	captionpos=b,                    
+	keepspaces=true,                 
+	% numbers=left,                    
+	numbersep=5pt,                  
+	showspaces=false,                
+	showstringspaces=false,
+	showtabs=false,                  
+	tabsize=4,
+	%frame=shadowbox,
+	frame=l,
+}
+
+\lstset{linewidth=\linewidth}
+\lstset{style=mystyle}
+
+
+\title{Title}
+
+\begin{document}
+\maketitle
+
+\section{Intro}
+
+Hello \cite{cityhash}. 
+
+\bibliographystyle{IEEEtran} 
+\bibliography{refs} 
+
+\end{document}
