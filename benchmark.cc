@@ -52,7 +52,7 @@ void run_benchmark()
 		element_set.insert(x);
 	}
 
-	BENCHMARK_FILTER<bits_per_key, uint32_t, decltype(&cuckoo_cityhash)> 
+	BENCHMARK_FILTER<bits_per_key, uint32_t, decltype(&cuckoo_cityhash), way> 
 		filter(cuckoo_cityhash, capacity);
 
 	size_t insert_count = 0;
@@ -73,15 +73,27 @@ void run_benchmark()
 			fp_count += 1;
 		}
 	}
-	log_info("load_factor: %.5f\n", (float) insert_count / capacity);
-	log_info("ideal_load_factor: %.5f\n", (float) num_elem / capacity);
-	log_info("FP_rate: %.5f\n", (float) fp_count / num_fp_test);
+    log_info("%d %.5f %.5f\n",
+            (int) log2(capacity),
+            (float) insert_count / capacity,
+            (float) fp_count / num_fp_test);
+/* log_info("load_factor: %.5f\n", (float) insert_count / capacity); */
+/* log_info("ideal_load_factor: %.5f\n", (float) num_elem / capacity); */
+/* log_info("FP_rate: %.5f\n", (float) fp_count / num_fp_test); */
 }
 
 int main()
 {
 /* template<int capacity, int bits_per_key, int way, int num_elem> */
 /* run_benchmark< 1 << 10,      12,       4,        1 << 10 >(); */
-	run_benchmark< 1 << 10,      12,       16,        1 << 10 >();
+	run_benchmark< 1 << 10,      12,    8,        1 << 10 >();
+	run_benchmark< 1 << 12,      12,    8,        1 << 12 >();
+	run_benchmark< 1 << 14,      12,    8,        1 << 14 >();
+	run_benchmark< 1 << 16,      12,    8,        1 << 16 >();
+	run_benchmark< 1 << 18,      12,    8,        1 << 18 >();
+	run_benchmark< 1 << 20,      12,    8,        1 << 20 >();
+	run_benchmark< 1 << 22,      12,    8,        1 << 22 >();
+	run_benchmark< 1 << 24,      12,    8,        1 << 24 >();
+	run_benchmark< 1 << 26,      12,    8,        1 << 26 >();
 	return 0;
 }
